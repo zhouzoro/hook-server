@@ -41,15 +41,17 @@ var updateApp = function(repo) {
 }
 
 router.post('/', function(req, res, next) {
+    var committer = '';
     var branch = '';
     var repo = '';
     try {
+        committer = req.body.commits.committer.name;
         branch = req.body.ref.substring(11);
         repo = req.body.repository.name;
     } catch (err) {
         winston.error(err);
     }
-    if (branch === 'master') {
+    if (committer === 'zhouzoro' && branch === 'master') {
         updateApp(repo);
     }
     winston.info(repo + '/' + branch)
