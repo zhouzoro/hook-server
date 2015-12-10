@@ -1,0 +1,1 @@
+"C:\Program Files\7-Zip\7z.exe" x C:/Projects/GitHub/running.mariana/master.zip -oC:/Projects/GitHub/running.mariana -aoa
