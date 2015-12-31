@@ -9,7 +9,7 @@ winston.add(winston.transports.File, {
     humanReadableUnhandledException: true
 });
 var updateApp = function(repo) {
-    var projPath = "C:/Projects/GitHub/running." + repo;
+    var projPath = "C:/Projects/Running/" + repo;
     cp.exec(projPath + "/wget.bat", function(err, stdout, stderr) {
         if (err) {
             winston.error(err);
