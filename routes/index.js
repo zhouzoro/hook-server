@@ -94,11 +94,11 @@ var updateApp = function(payload) {
             })
         }
         var unzip = function() {
-            winston.info('unzipping');
-            var cmd = shell.exec("unzip -o /home/web/projects/running/" + repo + "/master.zip -d /home/web/projects/running/" + repo, {
-                async: true
-            });
-            return new Promise(fulfill, reject) {
+            return new Promise(function(fulfill, reject) {
+                winston.info('unzipping');
+                var cmd = shell.exec("unzip -o /home/web/projects/running/" + repo + "/master.zip -d /home/web/projects/running/" + repo, {
+                    async: true
+                });
                 cmd.stdout.on('data', function(data) {
                     console.log('stdout::' + data);
                 })
@@ -106,7 +106,7 @@ var updateApp = function(payload) {
                     console.log('exit-code::' + data);
                     fulfill(data);
                 })
-            }
+            })
         }
         wget().then(unzip()).then(restart())
             /*cp.execFile(projPath + "/wget.sh", function(err, stdout, stderr) {
