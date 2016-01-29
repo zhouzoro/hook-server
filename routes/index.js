@@ -19,29 +19,14 @@ var updateApp = function(payload) {
             return shell.exec('pm2 stop ' + projPath + '/' + repo + '-master/bin/' + repo);
         }
         var npmInstall = function() {
-            return new Promise(function(fulfill, reject) {
                 if (payload['modified']) {
                     for (var i = 0; i < payload['modified'].length; i++) {
                         if (payload['modified'][i] === 'package.json') {
-                            winston.info('npm installing node_modules');
-                            var cmd = shell.exec('npm install --prefix /home/web/projects/running/' + repo + '/' + repo + '-master', {
-                                async: true
-                            });
-                            cmd.stdout.on('data', function(data) {
-                                console.log('stdout::' + data);
-                            })
-                            cmd.code.on('data', function(data) {
-                                console.log('exit-code::' + data);
-                                fulfill(data);
-                            })
+                            return shell.exec('npm install --prefix /home/web/projects/running/' + repo + '/' + repo + '-master');
 
                         }
-                        fulfill(1);
                     };
-                } else {
-                    fulfill(1);
                 }
-            })
         }
         var startApp = function() {
             winston.info('exec extra init script');
@@ -78,36 +63,15 @@ var updateApp = function(payload) {
     var updateSource = function() {
 
         var wget = function() {
-            return new Promise(function(fulfill, reject) {
-                winston.info('downloading');
-                var cmd = shell.exec("wget -O /home/web//projects/running/" + repo + "/master.zip 'https://github.com/zhouzoro/" + repo + "/archive/master.zip'", {
-                    async: true
-                });
-                cmd.stdout.on('data', function(data) {
-                    console.log('stdout::' + data);
-                })
-                cmd.code.on('data', function(data) {
-                    console.log('exit-code::' + data);
-                    fulfill(data);
-                })
-            })
+            return shell.exec("wget -O /home/web//projects/running/" + repo + "/master.zip 'https://github.com/zhouzoro/" + repo + "/archive/master.zip'");
         }
         var unzip = function() {
-            return new Promise(function(fulfill, reject) {
-                winston.info('unzipping');
-                var cmd = shell.exec("unzip -o /home/web/projects/running/" + repo + "/master.zip -d /home/web/projects/running/" + repo, {
-                    async: true
-                });
-                cmd.stdout.on('data', function(data) {
-                    console.log('stdout::' + data);
-                })
-                cmd.code.on('data', function(data) {
-                    console.log('exit-code::' + data);
-                    fulfill(data);
-                })
-            })
+            return shell.exec("unzip -o /home/web/projects/running/" + repo + "/master.zip -d /home/web/projects/running/");
         }
-        wget().then(unzip()).then(restart())
+
+        Promise.resolve(wget())
+            .then(unzip())
+            .then(restart());
             /*cp.execFile(projPath + "/wget.sh", function(err, stdout, stderr) {
                 if (err) {
                     winston.error(err);
