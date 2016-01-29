@@ -1,1 +1,0 @@
-powershell.exe wget https://github.com/zhouzoro/mariana/archive/master.zip -OutFile C:/Projects/GitHub/running.mariana/master.zip
