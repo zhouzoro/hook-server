@@ -150,7 +150,7 @@ router.post('/', function(req, res, next) {
     res.send(repo + '/' + branch);
     if (committer === 'zhouzoro' && branch === 'master') {
         var ua = updateApp(req.body);
-        if (req.body.zyrestart = true) {
+        if (req.body.zyrestart) {
             ua.restart();
         } else {
             ua.updateSource();
