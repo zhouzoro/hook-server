@@ -20,7 +20,7 @@ var updateApp = function(payload) {
             return shell.exec('pm2 stop ' + projPath + '/' + repo + '-master/bin/' + repo);
         }
         var npmInstall = function() {
-            return new Promise(fulfill, reject) {
+            return new Promise(function(fulfill, reject) {
                 if (payload['modified']) {
                     for (var i = 0; i < payload['modified'].length; i++) {
                         if (payload['modified'][i] === 'package.json') {
@@ -42,7 +42,7 @@ var updateApp = function(payload) {
                 } else {
                     fulfill(1);
                 }
-            }
+            })
         }
         var startApp = function() {
             winston.info('exec extra init script');
