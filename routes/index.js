@@ -79,11 +79,11 @@ var updateApp = function(payload) {
     var updateSource = function() {
 
         var wget = function() {
-            winston.info('downloading');
-            var cmd = shell.exec("wget -O /home/web//projects/running/" + repo + "/master.zip 'https://github.com/zhouzoro/" + repo + "/archive/master.zip'", {
-                async: true
-            });
-            return new Promise(fulfill, reject) {
+            return new Promise(function(fulfill, reject) {
+                winston.info('downloading');
+                var cmd = shell.exec("wget -O /home/web//projects/running/" + repo + "/master.zip 'https://github.com/zhouzoro/" + repo + "/archive/master.zip'", {
+                    async: true
+                });
                 cmd.stdout.on('data', function(data) {
                     console.log('stdout::' + data);
                 })
@@ -91,7 +91,7 @@ var updateApp = function(payload) {
                     console.log('exit-code::' + data);
                     fulfill(data);
                 })
-            }
+            })
         }
         var unzip = function() {
             winston.info('unzipping');
