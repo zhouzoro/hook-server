@@ -19,13 +19,18 @@ var updateApp = function(payload) {
             return shell.exec('pm2 stop ' + projPath + '/' + repo + '-master/bin/' + repo);
         }
         var npmInstall = function() {
-                if (payload['modified']) {
-                    for (var i = 0; i < payload['modified'].length; i++) {
-                        if (payload['modified'][i] === 'package.json') {
+                if (payload.commits[0].modified) {
+            winston.info('checking npm install');
+                    for (var i = 0; i < payload.commits[0].modified.length; i++) {
+                        if (payload.commits[0].modified[i] === 'package.json') {
+            winston.info('starting npm install');
+shell.cd(projPath + '/' + repo + '-master');
+ winston.info(shell.pwd());
                             return shell.exec('npm install --prefix /home/web/projects/running/' + repo + '/' + repo + '-master');
 
                         }
                     };
+return 1;
                 }
         }
         var startApp = function() {
@@ -41,8 +46,7 @@ var updateApp = function(payload) {
         }
 
         stopApp();
-        Promise.resolve(shell.exec('cd ' + projPath))
-            .then(npmInstall())
+        Promise.resolve(npmInstall())
             .then(startApp());
 
         /*var cdPath = function() {
@@ -110,8 +114,8 @@ router.post('/', function(req, res, next) {
     } catch (err) {
         winston.error(err);
     }
-    winston.info(repo + '/' + branch);
-    res.send(repo + '/' + branch);
+    winston.info(committer + '/' + repo + '/' + branch + '/' + req.body.zyrestart);
+    res.send(committer + '/' + repo + '/' + branch + '/' + req.body.zyrestart);
     if (committer === 'zhouzoro' && branch === 'master') {
         var ua = updateApp(req.body);
         if (req.body.zyrestart) {
