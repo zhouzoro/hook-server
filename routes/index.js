@@ -10,27 +10,38 @@ winston.add(winston.transports.File, {
     handleExceptions: true,
     humanReadableUnhandledException: true
 });
-var updateApp = function(repo) {
+var updateApp = function(payload) {
+    var repo = payload.repository.name;
     var projPath = "/home/web/projects/running/" + repo;
     shell.mkdir(projPath);
     var restart = function() {
         var stopApp = function() {
             winston.info('stopping' + repo);
-            return shell.exec('pm2 stop ' + projPath + '/bin/' + repo);
+            return shell.exec('pm2 stop ' + projPath + '/' + repo + '-master/bin/' + repo);
         }
         var npmInstall = function() {
-            winston.info('npm installing node_modules');
-            var cmd = shell.exec('npm install --prefix /home/web/projects/running/' + repo, {
-                async: true
-            });
             return new Promise(fulfill, reject) {
-                cmd.stdout.on('data', function(data) {
-                    console.log('stdout::' + data);
-                })
-                cmd.code.on('data', function(data) {
-                    console.log('exit-code::' + data);
-                    fulfill(data);
-                })
+                if (payload['modified']) {
+                    for (var i = 0; i < payload['modified'].length; i++) {
+                        if (payload['modified'][i] === 'package.json') {
+                            winston.info('npm installing node_modules');
+                            var cmd = shell.exec('npm install --prefix /home/web/projects/running/' + repo + '/' + repo + '-master', {
+                                async: true
+                            });
+                            cmd.stdout.on('data', function(data) {
+                                console.log('stdout::' + data);
+                            })
+                            cmd.code.on('data', function(data) {
+                                console.log('exit-code::' + data);
+                                fulfill(data);
+                            })
+
+                        }
+                        fulfill(1);
+                    };
+                } else {
+                    fulfill(1);
+                }
             }
         }
         var startApp = function() {
@@ -42,7 +53,7 @@ var updateApp = function(repo) {
                 winston.info(stdout);
             });
             winston.info('starting' + repo);
-            return shell.exec('pm2 start ' + projPath + '/bin/' + repo);
+            return shell.exec('pm2 start ' + projPath + '/' + repo + '-master/bin/' + repo);
         }
 
         stopApp();
@@ -136,15 +147,15 @@ router.post('/', function(req, res, next) {
     } catch (err) {
         winston.error(err);
     }
+    winston.info(repo + '/' + branch);
+    res.send(repo + '/' + branch);
     if (committer === 'zhouzoro' && branch === 'master') {
-        var ua = updateApp(repo);
+        var ua = updateApp(req.body);
         if (req.body.zyrestart = true) {
             ua.restart();
         } else {
             ua.updateSource();
         }
     }
-    winston.info(repo + '/' + branch)
-    res.send(repo + '/' + branch);
 });
 module.exports = router;
