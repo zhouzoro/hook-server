@@ -66,7 +66,7 @@ var updateApp = function(payload) {
             return shell.exec("wget -O /home/web//projects/running/" + repo + "/master.zip 'https://github.com/zhouzoro/" + repo + "/archive/master.zip'");
         }
         var unzip = function() {
-            return shell.exec("unzip -o /home/web/projects/running/" + repo + "/master.zip -d /home/web/projects/running/");
+            return shell.exec("unzip -o /home/web/projects/running/" + repo + "/master.zip -d /home/web/projects/running/" + repo);
         }
 
         Promise.resolve(wget())
