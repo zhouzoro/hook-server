@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var cp = require('child_process');
 var Promise = require('bluebird');
-var fs = require('fs-extra');
 var shell = require('shelljs');
 var winston = require('winston');
 winston.add(winston.transports.File, {
