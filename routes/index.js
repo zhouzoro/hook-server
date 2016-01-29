@@ -140,7 +140,7 @@ router.post('/', function(req, res, next) {
     var branch = '';
     var repo = '';
     try {
-        committer = req.body.commits.committer.name;
+        committer = req.body.commits[0].committer.name;
         branch = req.body.ref.substring(11);
         repo = req.body.repository.name;
     } catch (err) {
