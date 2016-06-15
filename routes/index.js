@@ -100,4 +100,30 @@ router.post('/', function(req, res, next) {
         }
     }
 });
+
+router.post('/githook', function(req, res, next) {
+    var committer = '';
+    var branch = '';
+    var repoName = '';
+    try {
+        committer = req.body.commits[0].committer.name;
+        branch = req.body.ref.substring(11);
+        repoName = req.body.repository.name;
+    } catch (err) {
+        winston.error(err);
+    }
+    winston.info(committer + '/' + repoName + '/' + branch + '/' + req.body.zyrestart);
+    res.send(committer + '/' + repoName + '/' + branch + '/' + req.body.zyrestart);
+    if (committer === 'zhouzoro' && branch === 'master') {
+        var ua = updateApp(req.body);
+        if (req.body.zyrestart) {
+            ua.restart();
+        } else {
+            ua.updateSource();
+        }
+    }
+});
+router.get('/test',function(req,res){
+    res.send('test ok')
+})
 module.exports = router;
