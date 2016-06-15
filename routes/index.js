@@ -126,4 +126,8 @@ router.post('/githook', function(req, res, next) {
 router.get('/test',function(req,res){
     res.send('test ok')
 })
+
+router.post('/test',function(req,res){
+    res.send('test ok')
+})
 module.exports = router;
