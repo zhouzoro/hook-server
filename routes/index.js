@@ -91,7 +91,7 @@ router.post('/', function(req, res, next) {
     }
     winston.info(committer + '/' + repoName + '/' + branch + '/' + req.body.zyrestart);
     res.send(committer + '/' + repoName + '/' + branch + '/' + req.body.zyrestart);
-    if (committer === 'zhouzoro' && branch === 'master') {
+    if (committer === 'zhouzoro'||committer === 'Jason Zhou' && branch === 'master') {
         var ua = updateApp(req.body);
         if (req.body.zyrestart) {
             ua.restart();
